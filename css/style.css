@@ -153,6 +153,19 @@ select {
   clear: both;
 }
 
+#error {
+  color: red;
+  text-transform: capitalize;
+}
+
+.error {
+  border: 2px solid red;
+}
+
+.success {
+  border: 2px solid green;
+}
+
 /* ================================= 
   Media Queries
 ==================================== */
