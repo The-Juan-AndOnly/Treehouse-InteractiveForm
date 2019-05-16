@@ -63,7 +63,7 @@ const tShirtColor = () => {
 let total = 0;
 const checkActivities = e => {
   const input = e.target;
-
+  const unavailable = `<span style="color:red; text-transform:uppercase;">Unavailable</span>`;
   const value = input.id;
   switch (value) {
     case 'all':
@@ -75,38 +75,58 @@ const checkActivities = e => {
       break;
     case 'js-frameworks':
       if (input.checked) {
-        $('#express').prop('disabled', true);
+        $('#express')
+          .prop({ disabled: true })
+          .after(unavailable);
         total += 100;
       } else {
         $('#express').prop('disabled', false);
+        $('#express')
+          .get(0)
+          .nextSibling.remove();
         total === 0 ? (total = 0) : (total -= 100);
       }
       break;
     case 'js-libs':
       if (input.checked) {
-        $('#node').prop('disabled', true);
+        $('#node')
+          .prop('disabled', true)
+          .after(unavailable);
         total += 100;
       } else {
         $('#node').prop('disabled', false);
+        $('#node')
+          .get(0)
+          .nextSibling.remove();
         total === 0 ? (total = 0) : (total -= 100);
       }
       break;
 
     case 'express':
       if (input.checked) {
-        $('#js-frameworks').prop('disabled', true);
+        $('#js-frameworks')
+          .prop('disabled', true)
+          .after(unavailable);
         total += 100;
       } else {
         $('#js-frameworks').prop('disabled', false);
+        $('#js-frameworks')
+          .get(0)
+          .nextSibling.remove();
         total === 0 ? (total = 0) : (total -= 100);
       }
       break;
     case 'node':
       if (input.checked) {
-        $('#js-libs').prop('disabled', true);
+        $('#js-libs')
+          .prop('disabled', true)
+          .after(unavailable);
         total += 100;
       } else {
         $('#js-libs').prop('disabled', false);
+        $('#js-libs')
+          .get(0)
+          .nextSibling.remove();
         total === 0 ? (total = 0) : (total -= 100);
       }
       break;
@@ -220,6 +240,7 @@ const modal = order => {
   <h4>Activities: <span> ${order.activities.map(activity =>
     activity.nextSibling.textContent.trim().split(' —', 1)
   )}</span></h4>
+  <h4>Total: $<span>${order.total}</span></h4>
   <h4>Payment Method: <span>${order.payment}</span></h4>
   <h4><span>We look forward to seeing you at Full Stack Conf &#128513;</span></h4>
   `;
@@ -252,6 +273,9 @@ const formSubmit = e => {
       color: $('#color option:selected').text() //shirt color
     },
     activities: $('.activities input[type="checkbox"]:checked').get(), //array of activities selected
+    total: $('#activityTotal')
+      .get(0)
+      .textContent.split('$', 2)[1], //Get the numeric value of total
     payment: $('#payment option:selected').text() //type of payment
   };
 
