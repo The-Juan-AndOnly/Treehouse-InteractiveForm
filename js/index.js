@@ -53,8 +53,80 @@ const tShirtColor = () => {
 };
 
 // Activities section
+let total = 0;
+const checkActivities = e => {
+  const input = e.target;
 
-const checkActivities = () => {};
+  const value = input.id;
+  switch (value) {
+    case 'all':
+      if (input.checked) {
+        total += 200;
+      } else {
+        total === 0 ? (total = 0) : (total -= 200);
+      }
+      break;
+    case 'js-frameworks':
+      if (input.checked) {
+        $('#express').prop('disabled', true);
+        total += 100;
+      } else {
+        $('#express').prop('disabled', false);
+        total === 0 ? (total = 0) : (total -= 100);
+      }
+      break;
+    case 'js-libs':
+      if (input.checked) {
+        $('#node').prop('disabled', true);
+        total += 100;
+      } else {
+        $('#node').prop('disabled', false);
+        total === 0 ? (total = 0) : (total -= 100);
+      }
+      break;
+
+    case 'express':
+      if (input.checked) {
+        $('#js-frameworks').prop('disabled', true);
+        total += 100;
+      } else {
+        $('#js-frameworks').prop('disabled', false);
+        total === 0 ? (total = 0) : (total -= 100);
+      }
+      break;
+    case 'node':
+      if (input.checked) {
+        $('#js-libs').prop('disabled', true);
+        total += 100;
+      } else {
+        $('#js-libs').prop('disabled', false);
+        total === 0 ? (total = 0) : (total -= 100);
+      }
+      break;
+    case 'build-tools':
+      if (input.checked) {
+        total += 100;
+      } else {
+        total === 0 ? (total = 0) : (total -= 100);
+      }
+      break;
+    case 'npm':
+      if (input.checked) {
+        total += 100;
+      } else {
+        total === 0 ? (total = 0) : (total -= 100);
+      }
+      break;
+
+    default:
+      return;
+  }
+  total > 0
+    ? $('#activityTotal')
+        .text('Total $ ' + total)
+        .show()
+    : $('#activityTotal').hide();
+};
 
 // PaymentInfo function that accepts type as props and will "show" or "hide" appropriate div
 const paymentInfo = type => {
