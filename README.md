@@ -6,7 +6,7 @@ View the [Live Demo](https://the-juan-andonly.github.io/Treehouse-InteractiveFor
 
 ---
 
-###Open the Live Demo site and fill out the form
+### Open the Live Demo site and fill out the form
 
 1. The form should provide error messages for input that are not properly filled
 2. Also if a Shirt design is not selected the form will not submit
