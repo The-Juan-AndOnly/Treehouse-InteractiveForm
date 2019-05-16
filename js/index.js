@@ -13,18 +13,18 @@ $(() => {
 */
 const hideElements = () => {
   $(
-    '#colors-js-puns, #otherJob, #activityTotal,  #credit-card, #paypal, #bitcoin'
+    '#colors-js-puns, #other-title, #activityTotal,  #credit-card, #paypal, #bitcoin'
   ).hide();
 };
 
 // Function that adds an input field when the Job Role of "Other" is selected
 const otherJobRole = () => {
   if ($('#title').val() === 'other') {
-    $('#otherJob')
+    $('#other-title')
       .show()
       .focus();
   } else {
-    $('#otherJob').hide();
+    $('#other-title').hide();
   }
 };
 
@@ -246,7 +246,7 @@ const formSubmit = e => {
   const order = {
     name: name.val(), //name value
     email: email.val(), //email value
-    job: jobRole.val() !== 'other' ? jobRole.val() : $('#otherJob').val(), //job value
+    job: jobRole.val() !== 'other' ? jobRole.val() : $('#other-title').val(), //job value
     shirt: {
       size: $('#size').val(), //shirt size
       color: $('#color option:selected').text() //shirt color
@@ -262,7 +262,7 @@ const formSubmit = e => {
   } else if (email.val() === '' || email.hasClass('error')) {
     errorMessage = `Please Enter a Valid Email`;
     scrollToTop();
-  } else if (jobRole.val() === 'other' && $('#otherJob').val() === '') {
+  } else if (jobRole.val() === 'other' && $('#other-title').val() === '') {
     errorMessage = `Please Fill in the Other Job Role`;
     scrollToTop();
   } else if (shirtDesign.val() === 'Select Theme') {
