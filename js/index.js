@@ -52,7 +52,14 @@ const tShirtColor = () => {
   }
 };
 
-// Activities section
+/*
+
+    Activities section
+    Set total to 0 checkes to see which checkbox was checked and disables any corresponsing activites with the same day and time. 
+    
+    Also increases/decreases total. And display if total > 0
+
+*/
 let total = 0;
 const checkActivities = e => {
   const input = e.target;
@@ -117,7 +124,6 @@ const checkActivities = e => {
         total === 0 ? (total = 0) : (total -= 100);
       }
       break;
-
     default:
       return;
   }
@@ -174,35 +180,119 @@ const inputHandler = validator => {
     const valid = validator(text); // returns true|false depending on regex validation
     const showBorder = text !== '' && !valid;
     const border = e.target;
-    const id = e.target.id;
-    highlightBorder(showBorder, border, id);
+    highlightBorder(showBorder, border);
   };
 };
 
 $('form').prepend(`<p id="error"></p>`);
-const highlightBorder = (show, element, name) => {
-  if (show) {
-    element.classList.add('error');
-    if (name === 'cc-num') {
-      $('#error').text(`Please enter a valid Credit Card #`);
-    } else {
-      $('#error').text(`Please enter a valid ${name}`);
-    }
-    $('#error').show();
-  } else {
-    element.classList.remove('error');
-    $('#error').text(``);
-    $('#error').hide();
-  }
+const highlightBorder = (show, element) => {
+  show ? element.classList.add('error') : element.classList.remove('error');
+  // $('#error').text(``);
+  // $('#error').text().length > 0 ? $('#error').show() : $('#error').hide();
+};
+
+/* 
+    Form Submit Functions
+*/
+
+// Scroll to the top of Page
+const scrollToTop = () => {
+  $('html,body').animate({ scrollTop: 0 }, 'slow');
+};
+
+const modal = order => {
+  const container = document.querySelector('.container');
+  const modalDiv = document.createElement('div');
+  modalDiv.id = 'modal';
+  const modalDisplay = document.createElement('div');
+  modalDisplay.classList.add('modal-flex');
+  modalDisplay.innerHTML = `
+  <h1>Thank You!!</h1>
+  <p>We have received your registration and emailed you a copy at ${
+    order.email
+  }. </p>
+  <h3>Here is your following registration:</h3>
+  <h4>Name: <span>${order.name}</span></h4>
+  <h4>Email: <span>${order.email}</span></h4>
+  <h4>Job role: <span>${order.job.toUpperCase()}<span></h4>
+  <h4>Shirt Size: <span>${order.shirt.size.charAt(0).toUpperCase()}</span></h4>
+  <h4>Design: <span>${order.shirt.color.split('(', 1)}</span></h4>
+  <h4>Activities: <span> ${order.activities.map(activity =>
+    activity.nextSibling.textContent.trim().split(' —', 1)
+  )}</span></h4>
+  <h4>Payment Method: <span>${order.payment}</span></h4>
+  <h4><span>We look forward to seeing you at Full Stack Conf &#128513;</span></h4>
+  `;
+  modalDiv.appendChild(modalDisplay);
+  container.appendChild(modalDiv);
+  setTimeout(() => {
+    location.reload();
+  }, 7000);
 };
 
 // On Form Submit prevents page from refreshing as runs the validators
 const formSubmit = e => {
   e.preventDefault();
+  const name = $('#name');
+  const email = $('#email');
+  const jobRole = $('#title');
+  const shirtDesign = $('#design');
+  const activities = $('.activities input[type="checkbox"]:checked');
+  const paymentInfo = $('#payment');
+  const ccNum = $('#cc-num');
+  const zip = $('#zip');
+  const cvv = $('#cvv');
   let errorMessage = '';
-  // Check if name is blank or does not pass RegEx
+  const order = {
+    name: name.val(), //name value
+    email: email.val(), //email value
+    job: jobRole.val() !== 'other' ? jobRole.val() : $('#otherJob').val(), //job value
+    shirt: {
+      size: $('#size').val(), //shirt size
+      color: $('#color option:selected').text() //shirt color
+    },
+    activities: $('.activities input[type="checkbox"]:checked').get(), //array of activities selected
+    payment: $('#payment option:selected').text() //type of payment
+  };
+
+  // Check if name is blank or if input has error class
+  if (name.val() === '' || name.hasClass('error')) {
+    errorMessage = `Please Enter A Valid Name`;
+    scrollToTop();
+  } else if (email.val() === '' || email.hasClass('error')) {
+    errorMessage = `Please Enter a Valid Email`;
+    scrollToTop();
+  } else if (jobRole.val() === 'other' && $('#otherJob').val() === '') {
+    errorMessage = `Please Fill in the Other Job Role`;
+    scrollToTop();
+  } else if (shirtDesign.val() === 'Select Theme') {
+    errorMessage = `Please Select A Shirt Theme`;
+    scrollToTop();
+  } else if (activities.length === 0) {
+    errorMessage = `Please Select An Activity`;
+    scrollToTop();
+  } else if (paymentInfo.val() === 'select_method') {
+    errorMessage = `Please Select a Valid Payment Method`;
+    scrollToTop();
+  } else if (paymentInfo.val() === 'credit card') {
+    if (ccNum.val() === '' || ccNum.hasClass('error')) {
+      errorMessage = `Please Enter a Valid Credit Card Number`;
+      scrollToTop();
+    } else if (zip.val() === '' || zip.hasClass('error')) {
+      errorMessage = `Please Enter a Valid Zip Code`;
+      scrollToTop();
+    } else if (cvv.val() === '' || cvv.hasClass('error')) {
+      errorMessage = `Please Enter a Valid CVV Number`;
+      scrollToTop();
+    } else {
+      modal(order);
+    }
+  } else {
+    modal(order);
+  }
 
   document.getElementById('error').innerHTML = errorMessage;
+  $('#error').text().length > 0 ? $('#error').show() : $('#error').hide();
 };
 
 //
@@ -220,5 +310,4 @@ $('#email').on('input', inputHandler(isValidEmail));
 $('#cc-num').on('input', inputHandler(isValidCC));
 $('#zip').on('input', inputHandler(isValidZip));
 $('#cvv').on('input', inputHandler(isValidCVV));
-
 $('form').submit(formSubmit);
