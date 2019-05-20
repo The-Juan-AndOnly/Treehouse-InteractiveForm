@@ -1,15 +1,13 @@
 // jQuery ready function for when the DOM is fully Loaded
 $(() => {
-  // Hides Some Elements when page loads
-  hideElements();
-  // Auto focus on the "Name" input field when form loads
-  $('#name').focus();
+  hideElements(); // Hides Some Elements when page loads
+  $('#name').focus(); //Auto focus on name input
+  $('#payment option[value="credit card"]').prop('selected', true); // Auto selects credit card as payment type
+  $('#credit-card').show();
 });
 
 /* 
-
-  Function to hide Elements that are meant to be hidden on page start
-
+Function to hide Elements that are meant to be hidden on page start
 */
 const hideElements = () => {
   $(
@@ -23,7 +21,13 @@ const otherJobRole = () => {
     $('#other-title')
       .show()
       .focus();
+    $('#other-title').on('input', function() {
+      this.value.trim() === ''
+        ? (this.nextElementSibling.style.display = 'block')
+        : (this.nextElementSibling.style.display = 'none');
+    });
   } else {
+    $('#other-title').get(0).nextElementSibling.style.display = 'none';
     $('#other-title').hide();
   }
 };
@@ -31,38 +35,42 @@ const otherJobRole = () => {
 // Function for T-shirt Color
 const tShirtColor = () => {
   $colorSelect = $('#colors-js-puns');
+  $designSelect = $('#design');
   $jsPuns = $('option:contains("JS Puns shirt only")');
   $heartJS = $('option:contains("JS shirt only")');
 
   // Once a Design is selected the appropriate Shirts will be displayed
-  if ($('#design').val() !== 'Select Theme') {
+  if ($designSelect.val() !== 'Select Theme') {
     $colorSelect.show();
+    $designSelect.get(0).nextElementSibling.style.display = 'none';
+
     // Only shows Shirts that are labelled "js puns"
     if ($('#design').val() === 'js puns') {
       $heartJS.hide();
       $('#color').val($jsPuns.val());
       $jsPuns.show();
     } else {
+      // show the I heart JS shirts
       $jsPuns.hide();
       $('#color').val($heartJS.val());
       $heartJS.show();
     }
   } else {
+    // hide the shirt colors and turn on tooltip to select a design
     $colorSelect.hide();
+    $designSelect.get(0).nextElementSibling.style.display = 'block';
   }
 };
 
 /*
-
-    Activities section
-    Set total to 0 checkes to see which checkbox was checked and disables any corresponsing activites with the same day and time. 
-    
-    Also increases/decreases total. And display if total > 0
-
+  Activities section
+  Set total to 0  & checks to see which checkbox was checked and disables any corresponsing activites with the same day and time. 
+  Also increases/decreases total. And display if total > 0
 */
 let total = 0;
 const checkActivities = e => {
   const input = e.target;
+  $('.activities .tooltip .sidetooltiptext').get(0).style.display = 'none'; //turn off tooltip
   const unavailable = `<span style="color:red; text-transform:uppercase;">Unavailable</span>`;
   const value = input.id;
   switch (value) {
@@ -76,11 +84,11 @@ const checkActivities = e => {
     case 'js-frameworks':
       if (input.checked) {
         $('#express')
-          .prop({ disabled: true })
+          .prop({ disabled: true }) //disable corresponding event with same time & date
           .after(unavailable);
         total += 100;
       } else {
-        $('#express').prop('disabled', false);
+        $('#express').prop('disabled', false); // re-enable corresponding event with same time & date
         $('#express')
           .get(0)
           .nextSibling.remove();
@@ -90,26 +98,25 @@ const checkActivities = e => {
     case 'js-libs':
       if (input.checked) {
         $('#node')
-          .prop('disabled', true)
+          .prop('disabled', true) //disable corresponding event with same time & date
           .after(unavailable);
         total += 100;
       } else {
-        $('#node').prop('disabled', false);
+        $('#node').prop('disabled', false); // re-enable corresponding event with same time & date
         $('#node')
           .get(0)
           .nextSibling.remove();
         total === 0 ? (total = 0) : (total -= 100);
       }
       break;
-
     case 'express':
       if (input.checked) {
         $('#js-frameworks')
-          .prop('disabled', true)
+          .prop('disabled', true) //disable corresponding event with same time & date
           .after(unavailable);
         total += 100;
       } else {
-        $('#js-frameworks').prop('disabled', false);
+        $('#js-frameworks').prop('disabled', false); //re-enable corresponding event with same time & date
         $('#js-frameworks')
           .get(0)
           .nextSibling.remove();
@@ -119,11 +126,11 @@ const checkActivities = e => {
     case 'node':
       if (input.checked) {
         $('#js-libs')
-          .prop('disabled', true)
+          .prop('disabled', true) //disable corresponding event with same time & date
           .after(unavailable);
         total += 100;
       } else {
-        $('#js-libs').prop('disabled', false);
+        $('#js-libs').prop('disabled', false); //re-enable corresponding event with same time & date
         $('#js-libs')
           .get(0)
           .nextSibling.remove();
@@ -147,6 +154,7 @@ const checkActivities = e => {
     default:
       return;
   }
+  // conditional to display/hide total if amount is greater than 0
   total > 0
     ? $('#activityTotal')
         .text('Total $ ' + total)
@@ -157,21 +165,21 @@ const checkActivities = e => {
 // PaymentInfo function that accepts type as props and will "show" or "hide" appropriate div
 const paymentInfo = type => {
   switch (type) {
-    case 'credit card':
-      return $('#credit-card').show(), $('#paypal, #bitcoin').hide();
+    case 'select_method':
+      return $('#bitcoin, #paypal, #credit-card').hide();
     case 'paypal':
       return $('#paypal').show(), $('#credit-card, #bitcoin').hide();
     case 'bitcoin':
       return $('#bitcoin').show(), $('#paypal, #credit-card').hide();
     default:
-      return $('#bitcoin, #paypal, #credit-card').hide();
+      return $('#credit-card').show(), $('#paypal, #bitcoin').hide();
   }
 };
 
-// RegEx validators
+// RegEx validators inspired from the RegEx Course on TeamTreehouse.com
 
 const isValidName = name => {
-  return /^([a-z])?[a-z]+ ?[a-z]*$/i.test(name);
+  return /^([A-Z]|[a-z])[a-zA-Z]+ ([A-Z]|[a-z])[a-zA-Z]+$/.test(name);
 };
 
 const isValidEmail = email => {
@@ -198,32 +206,29 @@ const inputHandler = validator => {
   return e => {
     const text = e.target.value; //input text
     const valid = validator(text); // returns true|false depending on regex validation
-    const showBorder = text !== '' && !valid;
-    const border = e.target;
-    highlightBorder(showBorder, border);
+    const toolTip = text !== '' && !valid;
+    const span = e.target.nextElementSibling;
+    showToolTip(toolTip, span);
   };
 };
 
-$('form').prepend(`<p id="error"></p>`);
-const highlightBorder = (show, element) => {
-  show ? element.classList.add('error') : element.classList.remove('error');
-  // $('#error').text(``);
-  // $('#error').text().length > 0 ? $('#error').show() : $('#error').hide();
+const showToolTip = (show, spanElement) => {
+  if (show) {
+    $(spanElement).css('display', 'block');
+  } else {
+    $(spanElement).css('display', 'none');
+  }
 };
 
 /* 
     Form Submit Functions
 */
 
-// Scroll to the top of Page
-const scrollToTop = () => {
-  $('html,body').animate({ scrollTop: 0 }, 'slow');
-};
-
+// Modal for after the Form Successfully submits
 const modal = order => {
-  const container = document.querySelector('.container');
+  const container = document.querySelector('.container'); // Create container for Modal
   const modalDiv = document.createElement('div');
-  modalDiv.id = 'modal';
+  modalDiv.id = 'modal'; //
   const modalDisplay = document.createElement('div');
   modalDisplay.classList.add('modal-flex');
   modalDisplay.innerHTML = `
@@ -235,7 +240,7 @@ const modal = order => {
   <h4>Name: <span>${order.name}</span></h4>
   <h4>Email: <span>${order.email}</span></h4>
   <h4>Job role: <span>${order.job.toUpperCase()}<span></h4>
-  <h4>Shirt Size: <span>${order.shirt.size.charAt(0).toUpperCase()}</span></h4>
+  <h4>Shirt Size: <span>${order.shirt.size}</span></h4>
   <h4>Design: <span>${order.shirt.color.split('(', 1)}</span></h4>
   <h4>Activities: <span> ${order.activities.map(activity =>
     activity.nextSibling.textContent.trim().split(' —', 1)
@@ -248,8 +253,14 @@ const modal = order => {
   container.appendChild(modalDiv);
   setTimeout(() => {
     location.reload();
-  }, 7000);
+  }, 5000);
 };
+
+// Form Error to display on top of Form when Fields are missing | invalid
+const formError = document.createElement('span');
+formError.id = 'error';
+formError.style.display = 'none';
+$('form').prepend(formError);
 
 // On Form Submit prevents page from refreshing as runs the validators
 const formSubmit = e => {
@@ -264,12 +275,14 @@ const formSubmit = e => {
   const zip = $('#zip');
   const cvv = $('#cvv');
   let errorMessage = '';
+
+  // Create an order Object that will be passed to a modal function when form successfully submits
   const order = {
     name: name.val(), //name value
     email: email.val(), //email value
     job: jobRole.val() !== 'other' ? jobRole.val() : $('#other-title').val(), //job value
     shirt: {
-      size: $('#size').val(), //shirt size
+      size: $('#size option:selected').text(), //shirt size
       color: $('#color option:selected').text() //shirt color
     },
     activities: $('.activities input[type="checkbox"]:checked').get(), //array of activities selected
@@ -278,50 +291,93 @@ const formSubmit = e => {
       .textContent.split('$', 2)[1], //Get the numeric value of total
     payment: $('#payment option:selected').text() //type of payment
   };
-
-  // Check if name is blank or if input has error class
-  if (name.val() === '' || name.hasClass('error')) {
-    errorMessage = `Please Enter A Valid Name`;
-    scrollToTop();
-  } else if (email.val() === '' || email.hasClass('error')) {
-    errorMessage = `Please Enter a Valid Email`;
-    scrollToTop();
-  } else if (jobRole.val() === 'other' && $('#other-title').val() === '') {
-    errorMessage = `Please Fill in the Other Job Role`;
-    scrollToTop();
-  } else if (shirtDesign.val() === 'Select Theme') {
-    errorMessage = `Please Select A Shirt Theme`;
-    scrollToTop();
-  } else if (activities.length === 0) {
-    errorMessage = `Please Select An Activity`;
-    scrollToTop();
-  } else if (paymentInfo.val() === 'select_method') {
-    errorMessage = `Please Select a Valid Payment Method`;
-    scrollToTop();
-  } else if (paymentInfo.val() === 'credit card') {
-    if (ccNum.val() === '' || ccNum.hasClass('error')) {
-      errorMessage = `Please Enter a Valid Credit Card Number`;
-      scrollToTop();
-    } else if (zip.val() === '' || zip.hasClass('error')) {
-      errorMessage = `Please Enter a Valid Zip Code`;
-      scrollToTop();
-    } else if (cvv.val() === '' || cvv.hasClass('error')) {
-      errorMessage = `Please Enter a Valid CVV Number`;
-      scrollToTop();
-    } else {
-      modal(order);
+  //
+  // Check if name is blank or if input has error class and turns on tooltip if invalid | missing
+  function validateForm() {
+    let isValid = true;
+    if (name.val() === '' || !isValidName(name.val())) {
+      name.get(0).nextElementSibling.style.display = 'block';
+      errorMessage === '' && (errorMessage = 'Invalid Name');
+      isValid = false;
     }
-  } else {
-    modal(order);
+    if (email.val() === '' || !isValidEmail(email.val())) {
+      email.get(0).nextElementSibling.style.display = 'block';
+      errorMessage === ''
+        ? (errorMessage = 'Invalid Email')
+        : (errorMessage += ', Email');
+      isValid = false;
+    }
+    if (jobRole.val() === 'other' && $('#other-title').val() === '') {
+      $('#other-title')
+        .next()
+        .get(0).style.display = 'block';
+      errorMessage === ''
+        ? (errorMessage = 'Invalid Job Role')
+        : (errorMessage += ', Job Role');
+      isValid = false;
+    }
+    if (shirtDesign.val() === 'Select Theme') {
+      $('#design').get(0).nextElementSibling.style.display = 'block';
+      errorMessage === ''
+        ? (errorMessage = 'Invalid Shirt Design')
+        : (errorMessage += ', Shirt Design');
+      isValid = false;
+    }
+    if (activities.length === 0) {
+      $('.activities .tooltip .sidetooltiptext').get(0).style.display = 'block';
+      errorMessage === ''
+        ? (errorMessage = 'Invalid Activites')
+        : (errorMessage += ', Activities');
+      isValid = false;
+    }
+    if (paymentInfo.val() === 'select_method') {
+      $('#payment').get(0).nextElementSibling.style.display = 'block';
+      errorMessage === ''
+        ? (errorMessage = 'Invalid Payment Method')
+        : (errorMessage += ', Payment Method');
+      isValid = false;
+    }
+    if (
+      paymentInfo.val() === 'credit card' &&
+      (ccNum.val() === '' || !isValidCC(ccNum.val()))
+    ) {
+      $(ccNum).get(0).nextElementSibling.style.display = 'block';
+      errorMessage === ''
+        ? (errorMessage = 'Invalid Credit Card #')
+        : (errorMessage += ', Credit Card #');
+      isValid = false;
+    }
+    if (
+      paymentInfo.val() === 'credit card' &&
+      (zip.val() === '' || !isValidZip(zip.val()))
+    ) {
+      $(zip).get(0).nextElementSibling.style.display = 'block';
+      errorMessage === ''
+        ? (errorMessage = 'Invalid Zip Code')
+        : (errorMessage += ', Zip Code');
+      isValid = false;
+    }
+    if (
+      paymentInfo.val() === 'credit card' &&
+      (cvv.val() === '' || !isValidCVV(cvv.val()))
+    ) {
+      $(cvv).get(0).nextElementSibling.style.display = 'block';
+      errorMessage === ''
+        ? (errorMessage = 'Invalid CVV')
+        : (errorMessage += ', CVV');
+      isValid = false;
+    }
+    return isValid;
   }
-
-  document.getElementById('error').innerHTML = errorMessage;
-  $('#error').text().length > 0 ? $('#error').show() : $('#error').hide();
+  // Contional that will either run modal if everything is completed successfully or display error message
+  validateForm() ? modal(order) : (formError.textContent = errorMessage);
+  $('html, body').animate({ scrollTop: 0 }, 'slow');
+  errorMessage !== ''
+    ? (formError.style.display = 'block')
+    : (formError.style.display = 'none');
 };
 
-//
 // Event Handlers
-//
 
 $('#title').change(otherJobRole);
 $('#design').change(tShirtColor);

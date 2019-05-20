@@ -21,12 +21,16 @@
       <form action="index.html" method="post">
         <fieldset>
           <legend>Basic Info</legend>
-
-          <label for="name">Name:</label>
-          <input type="text" id="name" name="user_name" />
-          <span class="is-hidden">Please include your name</span>
-          <label for="email">Email:</label>
-          <input type="text" id="email" name="user_email" />
+          <div class="tooltip">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="user_name" />
+            <span class="tooltiptext">Please Enter First Name & Last Name</span>
+          </div>
+          <div class="tooltip">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="user_email" />
+            <span class="tooltiptext">Please Enter Full Email Address</span>
+          </div>
 
           <label for="title">Job Role</label>
           <select id="title" name="user_title">
@@ -39,12 +43,11 @@
             <option value="student">Student</option>
             <option value="other">Other</option>
           </select>
-          <label for="other-title"></label>
-          <input
-            type="text"
-            placeholder="Enter Your Job Role"
-            id="other-title"
-          />
+          <div class="tooltip">
+            <label for="other-title"></label>
+            <input type="text" placeholder="Your Job Role" id="other-title" />
+            <span class="tooltiptext">Please Enter Your Job Role</span>
+          </div>
         </fieldset>
 
         <fieldset class="shirt">
@@ -60,13 +63,14 @@
             </select>
           </div>
 
-          <div>
+          <div class="tooltip">
             <label for="design">Design:</label>
             <select id="design" name="user_design">
               <option>Select Theme</option>
               <option value="js puns">Theme - JS Puns</option>
               <option value="heart js">Theme - I &#9829; JS</option>
             </select>
+            <span class="tooltiptext">Please Select A Design</span>
           </div>
 
           <div id="colors-js-puns" class="">
@@ -91,7 +95,12 @@
         </fieldset>
 
         <fieldset class="activities">
-          <legend>Register for Activities</legend>
+          <legend class="tooltip">
+            Register for Activities
+            <span class="sidetooltiptext"
+              >Please Select At Least 1 Activity</span
+            >
+          </legend>
           <label
             ><input type="checkbox" name="all" id="all" /> Main Conference —
             $200</label
@@ -124,29 +133,36 @@
         </fieldset>
         <fieldset>
           <legend>Payment Info</legend>
+          <div class="tooltip">
+            <label for="payment">I'm going to pay with:</label>
+            <select id="payment" name="user_payment">
+              <option value="select_method">Select Payment Method</option>
+              <option value="credit card">Credit Card</option>
+              <option value="paypal">PayPal</option>
+              <option value="bitcoin">Bitcoin</option>
+            </select>
+            <span class="sidetooltiptext">Please Choose A Valid Payment</span>
+          </div>
 
-          <label for="payment">I'm going to pay with:</label>
-          <select id="payment" name="user_payment">
-            <option value="select_method">Select Payment Method</option>
-            <option value="credit card">Credit Card</option>
-            <option value="paypal">PayPal</option>
-            <option value="bitcoin">Bitcoin</option>
-          </select>
-
-          <div id="credit-card" class="credit-card">
-            <div class="col-6 col">
+          <div id="credit-card" class="credit-card ">
+            <div class="col-6 col tooltip">
               <label for="cc-num">Card Number:</label>
               <input id="cc-num" name="user_cc-num" type="text" />
+              <span class="tooltiptext"
+                >Please Enter A Valid Credit Card Number</span
+              >
             </div>
 
-            <div class="col-3 col">
+            <div class="col-3 col tooltip">
               <label for="zip">Zip Code:</label>
               <input id="zip" name="user_zip" type="text" />
+              <span class="tooltiptext">Please Enter A Zip Code</span>
             </div>
 
-            <div class="col-3 col">
+            <div class="col-3 col tooltip">
               <label for="cvv">CVV:</label>
               <input id="cvv" name="user_cvv" type="text" />
+              <span class="tooltiptext">Please Enter A Valid CVV</span>
             </div>
 
             <label for="exp-month">Expiration Date:</label>

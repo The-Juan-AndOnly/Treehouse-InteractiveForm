@@ -155,16 +155,10 @@ select {
 }
 
 #error {
-  color: red;
+  color: #fff;
+  background: #ae0436;
   text-transform: capitalize;
-}
-
-.error {
-  border: 2px solid red;
-}
-
-.success {
-  border: 2px solid green;
+  padding: 10px;
 }
 
 #modal {
@@ -224,4 +218,65 @@ select {
   .col-6 {
     width: 49%;
   }
+}
+/* 
+  Tool tip Styling from W3Schools.com 
+*/
+
+.tooltip {
+  position: relative;
+  /* display: inline-block; */
+  /* width: 100%; */
+}
+
+.tooltip .tooltiptext {
+  display: none;
+  width: 120px;
+  background-color: #ae0436;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 85%;
+  left: 85%;
+  margin-left: -60px;
+  font-size: 0.9rem;
+}
+
+.tooltip .tooltiptext::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #ae0436 transparent;
+}
+.tooltip .sidetooltiptext {
+  display: none;
+  width: 120px;
+  background-color: #ae0436;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 40%;
+  left: 40%;
+  margin-left: -60px;
+  font-size: 0.9rem;
+}
+.tooltip .sidetooltiptext::after {
+  content: '';
+  position: absolute;
+  bottom: 50%;
+  right: 100%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #ae0436 transparent transparent;
 }
